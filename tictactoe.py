@@ -1,22 +1,24 @@
-#Starting this by just writing a simple PvE tictactoe program
+#Starting this by just writing a simple PvE tictactoe program.
+#This should satisfy milestone 1 in the project description.
 
-def createBoard():
+class TicTacToe:
+
     board = [[" ", " ", " "],
              [" ", " ", " "],
              [" ", " ", " "]]
-    return board;
 
-def drawBoard(board):
-    rows = 3
-    cols = 3
-    for i in range(rows):
-        if (i > 0):
-            print("- - - - -")
-        for j in range(cols):
-            if(j == cols - 1):
-                print(board[i][j])
-                break
-            print(board[i][j] + ' | ',end="")
+    def drawBoard(self):
+        rows = 3
+        cols = 3
+        for i in range(rows):
+            if (i > 0):
+                print("- - - - -")
+            for j in range(cols):
+                if(j == cols - 1):
+                    print(self.board[i][j])
+                    break
+                print(self.board[i][j] + ' | ',end="")
 
-board = createBoard()
-drawBoard(board)
+
+tictactoe = TicTacToe()
+tictactoe.drawBoard()
