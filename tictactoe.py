@@ -2,6 +2,7 @@
 #This should satisfy milestone 1 in the project description.
 
 #In this program, player will move first and be X's, cpu will move second and be O's.
+#test comment --Julian
 
 import random
 import time
