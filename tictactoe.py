@@ -32,7 +32,7 @@ class TicTacToe:
         
         x = input("Enter a move: ")
 
-        if(x == "1"):
+        if(x == "1"):                           #while(var % 6 != 0)?
             if (self.board[0][0] != " "):
                 print("error")
             else:
