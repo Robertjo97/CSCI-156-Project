@@ -28,6 +28,19 @@ playAgain.grid(row=3, column=0) #Places button on grid
 end = tkinter.Button(root, text="Exit", width=20, height=10, command=root.quit) #Creates button to end game
 end.grid(row=3, column=2)   #Places button on grid
 
+'''def cpuMove(self): #Dumb Cpu. For now it just randomly picks an available move. It doesnt take into account player moves yet.
+        possRows = [0,1,2]
+        possCols = [0,1,2]
+        moveMade = False
+
+        while(moveMade == False):
+            moveRow = random.choice(possRows)
+            movCol = random.choice(possCols)
+            if(self.board[moveRow][movCol] == " "):
+                self.board[moveRow][movCol] = "O"
+                moveMade = True
+                self.moveCount += 1
+                return'''
 def cpuScan():
     print('undefined')
     #make cpu logic
