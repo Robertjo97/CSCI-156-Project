@@ -41,9 +41,10 @@ end.grid(row=3, column=2)   #Places button on grid
                 moveMade = True
                 self.moveCount += 1
                 return'''
-def cpuScan():
+def cpuMove():
     print('undefined')
     #make cpu logic
+    #use time.sleep(0.5)
 
 def winScan():  #Function to scan the grid for win conditions
     
@@ -97,6 +98,7 @@ def click(index):    #Function to handle click event
         squaresUsed[index] = True
         player1 = True
     winScan()   #Check for a winner by calling the winScan function
+    cpuMove()
 
 
 for i in range(3):  #Loops to create buttons
