@@ -28,6 +28,10 @@ playAgain.grid(row=3, column=0) #Places button on grid
 end = tkinter.Button(root, text="Exit", width=20, height=10, command=root.quit) #Creates button to end game
 end.grid(row=3, column=2)   #Places button on grid
 
+def cpuScan():
+    print('undefined')
+    #make cpu logic
+
 def winScan():  #Function to scan the grid for win conditions
     
     if ( #Check if three squares in a row have the same value
