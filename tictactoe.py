@@ -1,34 +1,173 @@
-# Starting this by just writing a simple PvE tictactoe program.
-# This should satisfy milestone 1 in the project description.
+#Starting this by just writing a simple PvE tictactoe program.
+#This should satisfy milestone 1 in the project description.
 
-# In this program, player will move first and be X's, cpu will move second and be O's.
-# test comment --Julian
+#In this program, player will move first and be X's, cpu will move second and be O's.
+#test comment --Julian
 
 import random
 import time
-import tkinter
+import os
+import socket
+import threading
+import sys
 
-root = tkinter.Tk() #Create root gui object
-root.title("CSCI-156 Tic Tac Toe") #Title the window
-player1 = True #Keeps track of X's and O's. Player 1 is X's.
+address = str(sys.argv[1])
+port = int(sys.argv[2])
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-buttons = [] #Array that holds the buttons
-squaresUsed = [False for _ in range(9)] #Array that keeps track if a move has been made in a tile.
+print("Welcome to TicTacToe!\n\n")
+print("Select Game Mode: \n")
+print("1.) Player vs. CPU")
+print("2.) Player vs. Player")
+choice = input()
 
-def restart_game(): #Function to restart the game
-    global player1, squaresUsed #Global variables to be reset
-    for button in buttons: #Change button text back to " "
-        button.config(text=" ")
-    squaresUsed = [False for _ in range(9)] #Set all squares back to unused (false)
-    player1 = True  #Set starting player back to X's
+if(choice == '2'):
+    try:
+        client_socket.connect((address,port))
+    except:
+        print("Error connecting to server. Exiting program")
+        exit()
 
-playAgain = tkinter.Button(root, text="Restart", width=20, height=10, command=restart_game)  #Creates button to restart game
-playAgain.grid(row=3, column=0) #Places button on grid
+class TicTacToe:
 
-end = tkinter.Button(root, text="Exit", width=20, height=10, command=root.quit) #Creates button to end game
-end.grid(row=3, column=2)   #Places button on grid
+    board = [[" ", " ", " "],
+             [" ", " ", " "],
+             [" ", " ", " "]]
+    
+    moveCount = 0 #keeps track of number of moves for tie game scenario
+    winner = False
+    isPlayer1 = False
+    
+    def drawBoard(self): #Draws a 3x3 grid
+        rows = 3
+        cols = 3
+        for i in range(rows):
+            if (i > 0):
+                print("- - - - -")
+            for j in range(cols):
+                if(j == cols - 1):
+                    print(self.board[i][j])
+                    break
+                print(self.board[i][j] + ' | ',end="")
 
-'''def cpuMove(self): #Dumb Cpu. For now it just randomly picks an available move. It doesnt take into account player moves yet.
+    def playerMove(self, x): #I know there's a better way to do this but I'll figure it out later lol
+        
+        # x = input("Enter a move: ")
+
+        if(x == "1"):
+            if (self.board[0][0] != " "):
+                print("error")
+            else:
+                self.board[0][0] = "X"
+                self.moveCount += 1
+        elif(x == "2"):
+            if (self.board[0][1] != " "):
+                print("error")
+            else:
+                self.board[0][1] = "X"
+                self.moveCount += 1
+        elif(x == "3"):
+            if (self.board[0][2] != " "):
+                print("error")
+            else:
+                self.board[0][2] = "X"
+                self.moveCount += 1
+        elif(x == "4"):
+            if (self.board[1][0] != " "):
+                print("error")
+            else:
+                self.board[1][0] = "X"
+                self.moveCount += 1
+        elif(x == "5"):
+            if (self.board[1][1] != " "):
+                print("error")
+            else:
+                self.board[1][1] = "X"
+                self.moveCount += 1
+        elif(x == "6"):
+            if (self.board[1][2] != " "):
+                print("error")
+            else:
+                self.board[1][2] = "X"
+                self.moveCount += 1
+        elif(x == "7"):
+            if (self.board[2][0] != " "):
+                print("error")
+            else:
+                self.board[2][0] = "X"
+                self.moveCount += 1
+        elif(x == "8"):
+            if (self.board[2][1] != " "):
+                print("error")
+            else:
+                self.board[2][1] = "X"
+                self.moveCount += 1
+        elif(x == "9"):
+            if (self.board[2][2] != " "):
+                print("error")
+            else:
+                self.board[2][2] = "X"
+                self.moveCount += 1
+
+    def player2Move(self, oppMove):
+        x = oppMove
+
+        if(x == "1"):
+            if (self.board[0][0] != " "):
+                print("error")
+            else:
+                self.board[0][0] = "O"
+                self.moveCount += 1
+        elif(x == "2"):
+            if (self.board[0][1] != " "):
+                print("error")
+            else:
+                self.board[0][1] = "O"
+                self.moveCount += 1
+        elif(x == "3"):
+            if (self.board[0][2] != " "):
+                print("error")
+            else:
+                self.board[0][2] = "O"
+                self.moveCount += 1
+        elif(x == "4"):
+            if (self.board[1][0] != " "):
+                print("error")
+            else:
+                self.board[1][0] = "O"
+                self.moveCount += 1
+        elif(x == "5"):
+            if (self.board[1][1] != " "):
+                print("error")
+            else:
+                self.board[1][1] = "O"
+                self.moveCount += 1
+        elif(x == "6"):
+            if (self.board[1][2] != " "):
+                print("error")
+            else:
+                self.board[1][2] = "O"
+                self.moveCount += 1
+        elif(x == "7"):
+            if (self.board[2][0] != " "):
+                print("error")
+            else:
+                self.board[2][0] = "O"
+                self.moveCount += 1
+        elif(x == "8"):
+            if (self.board[2][1] != " "):
+                print("error")
+            else:
+                self.board[2][1] = "O"
+                self.moveCount += 1
+        elif(x == "9"):
+            if (self.board[2][2] != " "):
+                print("error")
+            else:
+                self.board[2][2] = "O"
+                self.moveCount += 1
+
+    def cpuMove(self): #Dumb Cpu. For now it just randomly picks an available move. It doesnt take into account player moves yet.
         possRows = [0,1,2]
         possCols = [0,1,2]
         moveMade = False
@@ -40,74 +179,123 @@ end.grid(row=3, column=2)   #Places button on grid
                 self.board[moveRow][movCol] = "O"
                 moveMade = True
                 self.moveCount += 1
-                return'''
-def cpuMove():
-    print('undefined')
-    #make cpu logic
-    #use time.sleep(0.5)
+                return
 
-def winScan():  #Function to scan the grid for win conditions
+    def winScan(self): #Scans the game board for a win. Again, there's prob a better way to do this.
+        for i in range (3):
+
+            #Horizontal win condition
+            if(self.board[i][0] == self.board[i][1] and self.board[i][1] == self.board[i][2] and self.board[i][0] != " "):
+                winner = self.board[i][0]
+                print("Game Over: " + winner + " Wins!")
+                self.winner = True
+                return
+            
+            #Vertical win condition
+            if(self.board[0][i] == self.board[1][i] and self.board[1][i] == self.board[2][i] and self.board[0][i] != " "):
+                winner = self.board[0][i]
+                print("Game Over: " + winner + " Wins!")
+                self.winner = True
+                return
+            
+            #Diagonal win condition
+            if(self.board[0][0] == self.board[1][1] and self.board[1][1] == self.board[2][2] and self.board[0][0] != " "):
+                winner = self.board[0][0]
+                print("Game Over: " + winner + " Wins!")
+                self.winner = True
+                return
+            if(self.board[0][2] == self.board[1][1] and self.board[1][1] == self.board[2][0] and self.board[0][2] != " "):
+                winner = self.board[0][2]
+                print("Game Over: " + winner + " Wins!")
+                self.winner = True
+                return
+            
+    def vsPlayer(self):                     #handles logic for Player vs. Player
+        msg = client_socket.recv(1024).decode('utf-8')
+        if(msg == 'client1_first'):
+            self.isPlayer1 = True
+            while True:
+                #os.system('cls')            # clears the screen
+                self.drawBoard()
+                tictactoe.winScan()
+                if(self.winner == True):
+                    break
+                elif(self.winner == False and self.moveCount == 9):
+                    print("Game Over: Tie Game!")
+                    break
+                x = input("Enter a move: ")
+                tictactoe.playerMove(x)
+                #os.system('cls')            # clears the screen
+                tictactoe.drawBoard()
+                tictactoe.winScan()
+                if(self.winner == True):
+                    break
+                elif(self.winner == False and self.moveCount == 9):
+                    print("Game Over: Tie Game!")
+                    break
+                client_socket.send(x.encode('utf-8'))
+                tictactoe.wait_for_opp_move()
+        else:
+            while True:
+                tictactoe.wait_for_opp_move()
+                #os.system('cls')            # clears the screen
+                self.drawBoard()
+                tictactoe.winScan()
+                if(self.winner == True):
+                    break
+                elif(self.winner == False and self.moveCount == 9):
+                    print("Game Over: Tie Game!")
+                    break
+                x = input("Enter a move: ")
+                tictactoe.player2Move(x)
+                #os.system('cls')            # clears the screen
+                tictactoe.drawBoard()
+                tictactoe.winScan()
+                if(self.winner == True):
+                    break
+                elif(self.winner == False and self.moveCount == 9):
+                    print("Game Over: Tie Game!")
+                    break
+                client_socket.send(x.encode('utf-8'))
     
-    if ( #Check if three squares in a row have the same value
-        buttons[0].cget("text") != " "                              #Top Horizontal
-        and buttons[0].cget("text") == buttons[1].cget("text")
-        and buttons[0].cget("text") == buttons[2].cget("text")
-        
-        or buttons[3].cget("text") != " "                           #Mid Horizontal
-        and buttons[3].cget("text") == buttons[4].cget("text")
-        and buttons[3].cget("text") == buttons[5].cget("text")
-        
-        or buttons[6].cget("text") != " "                           #Bot Horizontal
-        and buttons[6].cget("text") == buttons[7].cget("text")
-        and buttons[6].cget("text") == buttons[8].cget("text")
-
-        or buttons[0].cget("text") != " "                           #Left Verical
-        and buttons[0].cget("text") == buttons[3].cget("text")
-        and buttons[0].cget("text") == buttons[6].cget("text")
-
-        or buttons[1].cget("text") != " "                           #Mid Vertical
-        and buttons[1].cget("text") == buttons[4].cget("text")
-        and buttons[1].cget("text") == buttons[7].cget("text")
-
-        or buttons[2].cget("text") != " "                           #Right Vertical
-        and buttons[2].cget("text") == buttons[5].cget("text")
-        and buttons[2].cget("text") == buttons[8].cget("text")
-
-        or buttons[0].cget("text") != " "                           #Left->Right Diagonal
-        and buttons[0].cget("text") == buttons[4].cget("text")
-        and buttons[0].cget("text") == buttons[8].cget("text")
-
-        or buttons[2].cget("text") != " "                           #Right->Left Diagonal
-        and buttons[2].cget("text") == buttons[4].cget("text")
-        and buttons[2].cget("text") == buttons[6].cget("text")
-    ):
-        print("winner") #Print winner
-          
-    if(all(squaresUsed)):   #Check if all squares are true (indicating used)
-        print("Tie Game")   #Print Tie Game
+    def init(self): #Main game loop for Player vs. CPU
+        self.drawBoard()
+        while True:
+            tictactoe.playerMove()
+            tictactoe.drawBoard()
+            tictactoe.winScan()
+            if(self.winner == True):
+                break
+            elif(self.winner == False and self.moveCount == 9):
+                print("Game Over: Tie Game!")
+                break
+            tictactoe.cpuMove()
+            time.sleep(0.5)
+            tictactoe.drawBoard()
+            tictactoe.winScan()
+            if(self.winner == True):
+                break
+            elif(self.winner == False and self.moveCount == 9):
+                print("Game Over: Tie Game!")
+                break
+    
+    def wait_for_opp_move(self):            # waits for move from other player and redraws the board with their selected move
+        if(self.isPlayer1 == True):
+            print("Waiting for other player's move...")
+            oppMove = client_socket.recv(1024).decode('utf-8')      # receives move from other player
+            tictactoe.player2Move(oppMove)
+            return
+        else:
+            print("Waiting for other player's move...")
+            oppMove = client_socket.recv(1024).decode('utf-8')      # receives move from other player
+            tictactoe.playerMove(oppMove)
+            return
 
 
-def click(index):    #Function to handle click event
-    global player1  #Global player1 variable (Keeps track of which player is making a move)
-    if player1 and (squaresUsed[index] == False):   #If player is player 1 and the square clicked hasn't been used: 
-        buttons[index].config(text="X")    #set the clicked button to X
-        squaresUsed[index] = True   #Mark off the tile as being used
-        player1 = False #Set to player 2
-    elif (player1 == False) and (squaresUsed[index] == False):  #Same logic but if its player2's turn
-        buttons[index].config(text="O")
-        squaresUsed[index] = True
-        player1 = True
-    winScan()   #Check for a winner by calling the winScan function
-    cpuMove()
+if(choice == '1'):          # starts game with CPU if choice is 1   
+    tictactoe = TicTacToe()
+    tictactoe.init()
+else:                       # starts game with player if choice is 2
+    tictactoe = TicTacToe()
+    tictactoe.vsPlayer()
 
-
-for i in range(3):  #Loops to create buttons
-    for j in range(3):
-        button = tkinter.Button(
-            root, text=" ", height=10, width=20, command=lambda i=i, j=j: click((i * 3 + j))   #On click, calls the click function. Passes in an index value resulting from the conversion of the i and j coordinates to a 1d array.
-        )
-        button.grid(row=i, column=j) #Places button on grid to its respctive i and j coordinates.
-        buttons.append(button)  #Adds button to the buttons array
-
-
-root.mainloop() #Start main loop
