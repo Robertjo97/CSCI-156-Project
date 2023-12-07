@@ -204,9 +204,11 @@ class TicTacToe:
                 self.drawBoard()
                 tictactoe.winScan()
                 if(self.winner == True):
+                    client_socket.send(x.encode('utf-8'))
                     break
                 elif(self.winner == False and self.moveCount == 9):
                     print("Game Over: Tie Game!")
+                    client_socket.send(x.encode('utf-8'))
                     break
                 x = input("Enter a move: ")
                 tictactoe.playerMove(x)
@@ -238,9 +240,11 @@ class TicTacToe:
                 tictactoe.drawBoard()
                 tictactoe.winScan()
                 if(self.winner == True):
+                    client_socket.send(x.encode('utf-8'))
                     break
                 elif(self.winner == False and self.moveCount == 9):
                     print("Game Over: Tie Game!")
+                    client_socket.send(x.encode('utf-8'))
                     break
                 client_socket.send(x.encode('utf-8'))
     
