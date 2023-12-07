@@ -1,7 +1,5 @@
 import socket
 import sys
-import random
-import time
 
 address = ''
 port = int(sys.argv[1])
@@ -29,20 +27,41 @@ def manageGame():
     return      
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print('Socket creates on port: ' + str(port))
+print('Socket created on port: ' + str(port))
 server.bind((address, port))
 server.listen()
 print('Listening...')
 
 while True:
     print("Current client count: " + str(len(client_list)))
-    if len(client_list) < 2:
-        client, addr = server.accept()
-        client_list.append(client)
-        print('Connection from ' + str(addr))
-        #client.send(tictactoe.drawBoard().encode('utf-8'))
+    client, addr = server.accept()
+    client_list.append(client)
+    print('Connection from ' + str(addr))
+    client.send("Welcome to TicTacToe!\n\nSelect Game Mode: \n1.) Player vs CPU\n2.)Player vs Player".encode('utf-8'))
+    mode = client.recv(1024).decode('utf-8')                    #determines the mode of the first player
+    if mode == "1":
+        client.send("You have selected Player vs CPU".encode('utf-8'))
+        client_list.remove(client)
+        client.close()
+    elif mode == "2":
+        client.send("You have selected Player vs Player".encode('utf-8'))
+        if len(client_list) < 2:
+            #client.send("Waiting for another player to connect...".encode('utf-8'))         #sends message to that they are waiting for another player
+            client, addr = server.accept()
+            client_list.append(client)
+            print('Connection from ' + str(addr))
+            client.send("Welcome to TicTacToe!\n\nSelect Game Mode: \n1.) Player vs CPU\n2.)Player vs Player".encode('utf-8'))
+            mode = client.recv(1024).decode('utf-8')                #determines the mode of the second player
+            if mode == "1":
+                client.send("You have selected Player vs CPU".encode('utf-8'))
+                client_list.remove(client)
+                client.close()
+            elif mode == "2":
+                client.send("You have selected Player vs Player".encode('utf-8'))
+                client.send("Starting Game!".encode('utf-8'))
+                manageGame()
+                for client in client_list:
+                    client.close()
+                client_list = []
     else:
-        manageGame()
-        for client in client_list:
-            client.close()
-        #client_list = []  # Reset the client list for the next game
+        client.send("Invalid input. Please try again.".encode('utf-8'))
